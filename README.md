@@ -85,7 +85,15 @@ As miniaturas vêm da CDN pública da Steam. Jogos que não estão na Steam (Nin
 
 ## Deploy (Vercel + Turso)
 
-1. Crie um banco no [Turso](https://turso.tech) e pegue a URL `libsql://…` e o token.
-2. Na Vercel, configure as variáveis `DATABASE_URL`, `DATABASE_AUTH_TOKEN` e `AUTH_SECRET` (gere com `openssl rand -base64 32`).
-3. Localmente, com as mesmas variáveis no `.env`, rode `npm run db:setup` para criar e popular o banco remoto.
-4. Faça o deploy.
+1. Suba o projeto para o GitHub e importe na Vercel.
+2. Instale a integração **Turso Cloud** pela Vercel. Ela cria `TURSO_DATABASE_URL` e `TURSO_AUTH_TOKEN`, que o projeto já reconhece.
+3. Adicione manualmente a variável `AUTH_SECRET` (gere com `openssl rand -base64 32`).
+4. Crie as tabelas e popule o banco de produção a partir do seu computador:
+   ```bash
+   npx vercel link
+   npx vercel env pull .env.production.local --environment=production
+   npm run db:setup:prod
+   ```
+5. Faça um redeploy na Vercel.
+
+> `.env.production.local` está no `.gitignore`. Nunca rode `db:setup:prod` de novo depois de ter usuários reais: o seed apaga os dados. Para mudanças de schema, use `DOTENV_CONFIG_PATH=.env.production.local npm run db:migrate`.

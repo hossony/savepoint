@@ -11,6 +11,7 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
     "db:setup": "npm run db:migrate && npm run db:seed",
+    "db:setup:prod": "DOTENV_CONFIG_PATH=.env.production.local npm run db:setup",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
